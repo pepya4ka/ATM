@@ -8,6 +8,10 @@ import machine.Machine;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayDeque;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 class ThreadForMachine implements Runnable {
 
@@ -27,21 +31,22 @@ class ThreadForMachine implements Runnable {
         machine.setMachineWork(true);
         Account tempAccount = null;
         while (machine.isMachineWork()) {
-            if (Main.accountArrayDeque.peekFirst() != null) {
-                tempAccount = Main.accountArrayDeque.pollFirst();
+            //if (Main.accountArrayDeque.peekFirst() != null) {
+            try {
+                tempAccount = Main.accountArrayDeque.take();
                 //System.out.println(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber());
                 switch (machine.getMachineNumber()) {
                     case 1:
                         //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
-                        Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + "1\n");
+                        Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "1\n");
                         break;
                     case 2:
                         //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
-                        Main.jTextArea1.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + "2\n");
+                        Main.jTextArea1.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "2\n");
                         break;
                     case 3:
                         //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
-                        Main.jTextArea2.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + "3\n");
+                        Main.jTextArea2.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "3\n");
                         break;
                 }
                 machine.setOccupation(true);
@@ -50,25 +55,21 @@ class ThreadForMachine implements Runnable {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } else {
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
             while (machine.isOccupation()) {
                 AccountActionsName accountActionsName = new Actions().accountActionsName();
                 //System.out.println(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " на банкомате " + machine.getMachineNumber());
                 switch (machine.getMachineNumber()) {
                     case 1:
-                        Main.jTextArea.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " на банкомате " + "1\n");
+                        Main.jTextArea.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " в банкомате " + "1\n");
                         break;
                     case 2:
-                        Main.jTextArea1.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " на банкомате " + "2\n");
+                        Main.jTextArea1.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " в банкомате " + "2\n");
                         break;
                     case 3:
-                        Main.jTextArea2.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " на банкомате " + "3\n");
+                        Main.jTextArea2.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " в банкомате " + "3\n");
                         break;
                 }
                 if (accountActionsName == AccountActionsName.END_OF_SERVICE) machine.setOccupation(false);
@@ -85,7 +86,9 @@ class ThreadForMachine implements Runnable {
 
 public class Main {
 
-    public static ArrayDeque<Account> accountArrayDeque;
+    //public static ArrayDeque<Account> accountArrayDeque;
+    //public static BlockingDeque<Account> accountArrayDeque;
+    public static LinkedBlockingQueue<Account> accountArrayDeque;
     public static JFrame jFrame = new JFrame("Сеть банкоматов");
     public static JTextArea jTextArea;//1 машина
     public static JTextArea jTextArea1;//2 машина
@@ -94,7 +97,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        accountArrayDeque = new ArrayDeque<>();
+        //accountArrayDeque = new ArrayDeque<>();
+        accountArrayDeque = new LinkedBlockingQueue<>();
         frameManagerActive(jFrame);
         try {
             Thread.sleep(200);
@@ -106,9 +110,10 @@ public class Main {
             while (true) {
                 accountArrayDeque.add(new Account());
 //                jTextArea.append("                              " + accountArrayDeque.peekLast().getAccountNumber() + " встал в очередь\n");
-                System.out.println("                              " + accountArrayDeque.peekLast().getAccountNumber() + " встал в очередь");
+//                System.out.println("                              " + accountArrayDeque.peekLast().getAccountNumber() + " встал в очередь");
+                System.out.println("                              Новый человек встал в очередь");
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1800);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
