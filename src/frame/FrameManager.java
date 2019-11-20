@@ -6,10 +6,10 @@ import java.awt.*;
 public class FrameManager {
 
     public static JFrame jFrame1 = new JFrame("Сеть банкоматов");
-    public static JTextArea jTextArea;
+    //public static JTextArea jTextArea;
     private static int numberMachine = 0;
 
-    public static void frameManagerActive(JFrame jFrame) {
+    public static JFrame frameManagerActive(JFrame jFrame, JTextArea jTextArea) {
 
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel jPanel = new JPanel();
@@ -25,7 +25,7 @@ public class FrameManager {
         jFrame.setVisible(true);
         jFrame.setLocation(600, 300);
 
-        jFrame1 = jFrame;
+        return jFrame;
     }
 
     public static void addLabelToFrame(JPanel jPanel, JTextArea jTextArea) {
