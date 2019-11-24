@@ -7,11 +7,7 @@ import machine.Machine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayDeque;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 
 class ThreadForMachine implements Runnable {
 
@@ -86,8 +82,6 @@ class ThreadForMachine implements Runnable {
 
 public class Main {
 
-    //public static ArrayDeque<Account> accountArrayDeque;
-    //public static BlockingDeque<Account> accountArrayDeque;
     public static LinkedBlockingQueue<Account> accountArrayDeque;
     public static JFrame jFrame = new JFrame("Сеть банкоматов");
     public static JTextArea jTextArea;//1 машина
@@ -136,6 +130,7 @@ public class Main {
 
     public static void frameManagerActive(JFrame jFrame) {
 
+
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new GridLayout(6, 2));
@@ -145,19 +140,26 @@ public class Main {
         jFrame.getContentPane().add(BorderLayout.CENTER, jPanel);
 
 
-        jFrame.setSize(800, 500);
+        jFrame.setSize(900, 600);
         jFrame.setResizable(false);
         jFrame.setVisible(true);
         jFrame.setLocation(600, 300);
     }
 
     public static void addLabelToFrame(JPanel jPanel) {
+        Font font = new Font("Impact", Font.ITALIC, 12);
+
         numberMachine++;
+        JLabel label = new JLabel("Банкомат1: ");
+        JLabel labelAmountATMAction = new JLabel("Кол-во операций ");
+        label.setFont(font);
         jTextArea = new JTextArea(2, 3);
         jTextArea.setName(String.valueOf(numberMachine));
 
 
         jTextArea.setEditable(false);
+        jPanel.add(label);
+        jPanel.add(labelAmountATMAction);
         jPanel.add(jTextArea);
 
 
@@ -171,11 +173,16 @@ public class Main {
         //
 
         numberMachine++;
+        JLabel label1 = new JLabel("Банкомат2: ");
+        JLabel labelAmountATMAction1 = new JLabel("Кол-во операций ");
+        label1.setFont(font);
         jTextArea1 = new JTextArea(2, 3);
         jTextArea1.setName(String.valueOf(numberMachine));
 
 
         jTextArea1.setEditable(false);
+        jPanel.add(label1);
+        jPanel.add(labelAmountATMAction1);
         jPanel.add(jTextArea1);
 
 
@@ -188,11 +195,16 @@ public class Main {
 
         //
         numberMachine++;
+        JLabel label2 = new JLabel("Банкомат3: ");
+        JLabel labelAmountATMAction2 = new JLabel("Кол-во операций ");
+        label2.setFont(font);
         jTextArea2 = new JTextArea(2, 3);
         jTextArea2.setName(String.valueOf(numberMachine));
 
 
         jTextArea2.setEditable(false);
+        jPanel.add(label2);
+        jPanel.add(labelAmountATMAction2);
         jPanel.add(jTextArea2);
 
 
@@ -202,6 +214,9 @@ public class Main {
         scrollPane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jTextArea2.setEditable(false);
         jPanel.add(scrollPane2);
+
+
+
     }
 
 }
