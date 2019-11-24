@@ -3,7 +3,7 @@ package machine;
 public class Machine implements MachineActions {
 
     private int machineNumber;
-    private int machineCashAmount;
+    private double machineCashAmount;
     private boolean machineWork;
     private boolean occupation;
     private int actionsAmountByMachine;
@@ -22,11 +22,11 @@ public class Machine implements MachineActions {
         this.actionsAmountByMachine = actionsAmountByMachine;
     }
 
-    public int getMachineCashAmount() {
+    public double getMachineCashAmount() {
         return machineCashAmount;
     }
 
-    public void setMachineCashAmount(int machineCashAmount) {
+    public void setMachineCashAmount(double machineCashAmount) {
         this.machineCashAmount = machineCashAmount;
     }
 

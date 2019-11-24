@@ -73,7 +73,7 @@ public class FrameManager extends JFrame {
 }
 */
 
-package frame;
+/*package frame;
 // Пример использования менеджера расположения GroupLayout
 
 import javax.swing.*;
@@ -175,4 +175,4 @@ public class FrameManager extends JFrame
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jTextArea.setEditable(false);
     }
-}
+}*/
