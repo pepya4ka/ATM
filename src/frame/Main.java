@@ -35,14 +35,20 @@ class ThreadForMachine implements Runnable {
                     case 1:
                         //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
                         Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "1\n");
+                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+                        Main.labelAmountATMAction.setText("Кол-во операций " + machine.getActionsAmountByMachine());
                         break;
                     case 2:
                         //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
                         Main.jTextArea1.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "2\n");
+                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+                        Main.labelAmountATMAction1.setText("Кол-во операций " + machine.getActionsAmountByMachine());
                         break;
                     case 3:
                         //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
                         Main.jTextArea2.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "3\n");
+                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+                        Main.labelAmountATMAction2.setText("Кол-во операций " + machine.getActionsAmountByMachine());
                         break;
                 }
                 machine.setOccupation(true);
@@ -60,12 +66,19 @@ class ThreadForMachine implements Runnable {
                 switch (machine.getMachineNumber()) {
                     case 1:
                         Main.jTextArea.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " в банкомате " + "1\n");
+
+                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+                        Main.labelAmountATMAction.setText("Кол-во операций " + machine.getActionsAmountByMachine());
                         break;
                     case 2:
                         Main.jTextArea1.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " в банкомате " + "2\n");
+                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+                        Main.labelAmountATMAction1.setText("Кол-во операций " + machine.getActionsAmountByMachine());
                         break;
                     case 3:
                         Main.jTextArea2.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " в банкомате " + "3\n");
+                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+                        Main.labelAmountATMAction2.setText("Кол-во операций " + machine.getActionsAmountByMachine());
                         break;
                 }
                 if (accountActionsName == AccountActionsName.END_OF_SERVICE) machine.setOccupation(false);
@@ -87,6 +100,12 @@ public class Main {
     public static JTextArea jTextArea;//1 машина
     public static JTextArea jTextArea1;//2 машина
     public static JTextArea jTextArea2;//3 машина
+    public static JLabel labelAmountATMMoney;
+    public static JLabel labelAmountATMMoney1;
+    public static JLabel labelAmountATMMoney2;
+    public static JLabel labelAmountATMAction;
+    public static JLabel labelAmountATMAction1;
+    public static JLabel labelAmountATMAction2;
     private static int numberMachine = 0;
 
     public static void main(String[] args) {
@@ -133,17 +152,19 @@ public class Main {
 
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel jPanel = new JPanel();
-        jPanel.setLayout(new GridLayout(6, 2));
+        jPanel.setLayout(new GridLayout(3, 4));
         addLabelToFrame(jPanel);
         //addLabelToFrame(jPanel);
 //        addLabelToFrame(jPanel);
+
+//        jFrame.getContentPane().add(BorderLayout.CENTER, jPanel);
         jFrame.getContentPane().add(BorderLayout.CENTER, jPanel);
 
 
-        jFrame.setSize(900, 600);
+        jFrame.setSize(1500, 600);
         jFrame.setResizable(false);
         jFrame.setVisible(true);
-        jFrame.setLocation(600, 300);
+        jFrame.setLocation(300, 300);
     }
 
     public static void addLabelToFrame(JPanel jPanel) {
@@ -151,8 +172,9 @@ public class Main {
 
         numberMachine++;
         JLabel label = new JLabel("Банкомат1: ");
-        JLabel labelAmountATMAction = new JLabel("Кол-во операций ");
+        labelAmountATMAction = new JLabel("Кол-во операций ");
         label.setFont(font);
+        labelAmountATMMoney = new JLabel("Денег в банкомате ");
         jTextArea = new JTextArea(2, 3);
         jTextArea.setName(String.valueOf(numberMachine));
 
@@ -160,6 +182,7 @@ public class Main {
         jTextArea.setEditable(false);
         jPanel.add(label);
         jPanel.add(labelAmountATMAction);
+        jPanel.add(labelAmountATMMoney);
         jPanel.add(jTextArea);
 
 
@@ -174,7 +197,8 @@ public class Main {
 
         numberMachine++;
         JLabel label1 = new JLabel("Банкомат2: ");
-        JLabel labelAmountATMAction1 = new JLabel("Кол-во операций ");
+        labelAmountATMAction1 = new JLabel("Кол-во операций ");
+        labelAmountATMMoney1 = new JLabel("Денег в банкомате ");
         label1.setFont(font);
         jTextArea1 = new JTextArea(2, 3);
         jTextArea1.setName(String.valueOf(numberMachine));
@@ -183,6 +207,7 @@ public class Main {
         jTextArea1.setEditable(false);
         jPanel.add(label1);
         jPanel.add(labelAmountATMAction1);
+        jPanel.add(labelAmountATMMoney1);
         jPanel.add(jTextArea1);
 
 
@@ -196,7 +221,8 @@ public class Main {
         //
         numberMachine++;
         JLabel label2 = new JLabel("Банкомат3: ");
-        JLabel labelAmountATMAction2 = new JLabel("Кол-во операций ");
+        labelAmountATMAction2 = new JLabel("Кол-во операций ");
+        labelAmountATMMoney2 = new JLabel("Денег в банкомате ");
         label2.setFont(font);
         jTextArea2 = new JTextArea(2, 3);
         jTextArea2.setName(String.valueOf(numberMachine));
@@ -205,6 +231,7 @@ public class Main {
         jTextArea2.setEditable(false);
         jPanel.add(label2);
         jPanel.add(labelAmountATMAction2);
+        jPanel.add(labelAmountATMMoney2);
         jPanel.add(jTextArea2);
 
 

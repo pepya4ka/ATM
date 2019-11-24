@@ -6,10 +6,20 @@ public class Machine implements MachineActions {
     private int machineCashAmount;
     private boolean machineWork;
     private boolean occupation;
+    private int actionsAmountByMachine;
 
     public Machine() {
         this.machineWork = true;
         this.occupation = false;
+        this.machineCashAmount = 0;
+    }
+
+    public int getActionsAmountByMachine() {
+        return actionsAmountByMachine;
+    }
+
+    public void setActionsAmountByMachine(int actionsAmountByMachine) {
+        this.actionsAmountByMachine = actionsAmountByMachine;
     }
 
     public int getMachineCashAmount() {
