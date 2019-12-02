@@ -120,7 +120,11 @@ class ThreadForMachine implements Runnable {
                             Main.components.get("third").setEnabled(true);
                             break;
                     }
-                    JOptionPane.showMessageDialog(null, "Банкомат " + machine.getMachineNumber() + " не может подключиться к серверу!", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    if (new Account().randomAmount(10) > 5)
+                        JOptionPane.showMessageDialog(null, "Банкомат " + machine.getMachineNumber() + " не может подключиться к серверу!", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    else
+                        JOptionPane.showMessageDialog(null, "Банкомат " + machine.getMachineNumber() + " съел карту", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
                     machine.setMachineWork(false);
                     do {
                         try {
@@ -225,24 +229,6 @@ public class Main {
         JButton jButton = new JButton("Починить " + numberMachine + " банкомат");
         jButton.setEnabled(false);
         jButton.setPreferredSize(new Dimension(489, 50));
-
-//        switch (numberMachine) {
-//            case 1:
-//                //OperatorComponents.REPAIR_FIRST_MACHINE.getAction().setMachine(machineMap.get(1));
-//                //jButton.addActionListener(OperatorComponents.REPAIR_FIRST_MACHINE.getAction());
-//                jButton.addActionListener(new MachineButtonActionListener());
-//                break;
-//            case 2:
-//                //OperatorComponents.REPAIR_FIRST_MACHINE.getAction().setMachine(machineMap.get(1));
-//                //jButton.addActionListener(OperatorComponents.REPAIR_SECOND_MACHINE.getAction());
-//                jButton.addActionListener(new MachineButtonActionListener());
-//                break;
-//            case 3:
-//                //OperatorComponents.REPAIR_FIRST_MACHINE.getAction().setMachine(machineMap.get(1));
-//                //jButton.addActionListener(OperatorComponents.REPAIR_THIRD_MACHINE.getAction());
-//                jButton.addActionListener(new MachineButtonActionListener());
-//                break;
-//        }
         jButton.addActionListener(new MachineButtonActionListener());
         jPanel.add(jButton, BorderLayout.PAGE_END);
 
