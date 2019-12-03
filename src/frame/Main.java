@@ -51,30 +51,11 @@ class ThreadForMachine implements Runnable {
         machine.setMachineWork(true);
         Account tempAccount = null;
         while (machine.isMachineWork()) {
-            //if (Main.accountArrayDeque.peekFirst() != null) {
             try {
                 tempAccount = Main.accountArrayDeque.take();
-                //System.out.println(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber());
-                switch (machine.getMachineNumber()) {
-                    case 1:
-                        //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
-                        Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "1\n");
-                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
-                        Main.labelAmountATMAction.setText("Кол-во операций " + machine.getActionsAmountByMachine());
-                        break;
-                    case 2:
-                        //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
-                        Main.jTextArea1.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "2\n");
-                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
-                        Main.labelAmountATMAction1.setText("Кол-во операций " + machine.getActionsAmountByMachine());
-                        break;
-                    case 3:
-                        //Main.jTextArea.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " на банкомате " + machine.getMachineNumber() + "\n");
-                        Main.jTextArea2.append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + "3\n");
-                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
-                        Main.labelAmountATMAction2.setText("Кол-во операций " + machine.getActionsAmountByMachine());
-                        break;
-                }
+                Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + machine.getMachineNumber() + "\n");
+                machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+                Main.jLabelMapAction.get(machine.getMachineNumber()).setText("Кол-во операций " + machine.getActionsAmountByMachine());
                 machine.setOccupation(true);
                 try {
                     Thread.sleep(1500);
@@ -86,40 +67,13 @@ class ThreadForMachine implements Runnable {
             }
             while (machine.isOccupation()) {
                 AccountActionsName accountActionsName = new Actions().accountActionsName();
-                //System.out.println(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + " на банкомате " + machine.getMachineNumber());
                 String money = replenishAndWithdraw(tempAccount, accountActionsName.getTitle(), machine);
-                switch (machine.getMachineNumber()) {
-                    case 1:
-                        Main.jTextArea.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + money + " в банкомате " + "1\n");
-                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
-                        Main.labelAmountATMAction.setText("Кол-во операций " + machine.getActionsAmountByMachine());
-                        Main.labelAmountATMMoney.setText("Прибыль банкомата " + (int) machine.getMachineCashAmount() + " р");
-                        break;
-                    case 2:
-                        Main.jTextArea1.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + money + " в банкомате " + "2\n");
-                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
-                        Main.labelAmountATMAction1.setText("Кол-во операций " + machine.getActionsAmountByMachine());
-                        Main.labelAmountATMMoney1.setText("Прибыль банкомата " + (int) machine.getMachineCashAmount() + " р");
-                        break;
-                    case 3:
-                        Main.jTextArea2.append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + money + " в банкомате " + "3\n");
-                        machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
-                        Main.labelAmountATMAction2.setText("Кол-во операций " + machine.getActionsAmountByMachine());
-                        Main.labelAmountATMMoney2.setText("Прибыль банкомата " + (int) machine.getMachineCashAmount() + " р");
-                        break;
-                }
+                Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + money + " в банкомате " + machine.getMachineNumber() + "\n");
+                machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+                Main.jLabelMapAction.get(machine.getMachineNumber()).setText("Кол-во операций " + machine.getActionsAmountByMachine());
+                Main.jLabelMapMoney.get(machine.getMachineNumber()).setText("Прибыль банкомата " + (int) machine.getMachineCashAmount() + " р");
                 if (new Account().randomAmount(100) > 80) {
-                    switch (machine.getMachineNumber()) {
-                        case 1:
-                            Main.components.get("first").setEnabled(true);
-                            break;
-                        case 2:
-                            Main.components.get("second").setEnabled(true);
-                            break;
-                        case 3:
-                            Main.components.get("third").setEnabled(true);
-                            break;
-                    }
+                    Main.components.get(machine.getMachineNumber()).setEnabled(true);
                     if (new Account().randomAmount(10) > 5)
                         JOptionPane.showMessageDialog(null, "Банкомат " + machine.getMachineNumber() + " не может подключиться к серверу!", "Ошибка", JOptionPane.ERROR_MESSAGE);
                     else
@@ -151,22 +105,14 @@ public class Main {
 
     public static LinkedBlockingQueue<Account> accountArrayDeque;
     public static JFrame jFrame = new JFrame("Сеть банкоматов");
-    public static JTextArea jTextArea;//1 машина
-    public static JTextArea jTextArea1;//2 машина
-    public static JTextArea jTextArea2;//3 машина
-    public static JLabel labelAmountATMMoney;
-    public static JLabel labelAmountATMMoney1;
-    public static JLabel labelAmountATMMoney2;
-    public static JLabel labelAmountATMAction;
-    public static JLabel labelAmountATMAction1;
-    public static JLabel labelAmountATMAction2;
-    private static int numberMachine = 0;
-    public static Map<String, JComponent> components = new HashMap<>();
+    public static Map<Integer, JButton> components = new HashMap<>();
     public static Map<Integer, Machine> machineMap = new HashMap<>();
+    public static Map<Integer, JTextArea> jTextAreaMap = new HashMap<>();
+    public static Map<Integer, JLabel> jLabelMapMoney = new HashMap<>();
+    public static Map<Integer, JLabel> jLabelMapAction = new HashMap<>();
 
     public static void main(String[] args) {
 
-        //accountArrayDeque = new ArrayDeque<>();
         accountArrayDeque = new LinkedBlockingQueue<>();
         frameManagerActive(jFrame);
         try {
@@ -178,8 +124,6 @@ public class Main {
         Runnable runnableForAccount = () -> {
             while (true) {
                 accountArrayDeque.add(new Account());
-//                jTextArea.append("                              " + accountArrayDeque.peekLast().getAccountNumber() + " встал в очередь\n");
-//                System.out.println("                              " + accountArrayDeque.peekLast().getAccountNumber() + " встал в очередь");
                 System.out.println("                              Новый человек встал в очередь");
                 try {
                     Thread.sleep(1800);
@@ -209,12 +153,14 @@ public class Main {
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new GridLayout(3, 4));
-        addLabelToFrame(jPanel);
+        addLabelToFrame(1, jPanel);
+        addLabelToFrame(2, jPanel);
+        addLabelToFrame(3, jPanel);
 
         JPanel jPanelForButton = new JPanel();
-        components.put(OperatorComponents.REPAIR_FIRST_MACHINE.toString(), setupRepairButton(1, jPanelForButton));
-        components.put(OperatorComponents.REPAIR_SECOND_MACHINE.toString(), setupRepairButton(2, jPanelForButton));
-        components.put(OperatorComponents.REPAIR_THIRD_MACHINE.toString(), setupRepairButton(3, jPanelForButton));
+        components.put(1, setupRepairButton(1, jPanelForButton));
+        components.put(2, setupRepairButton(2, jPanelForButton));
+        components.put(3, setupRepairButton(3, jPanelForButton));
 
         jFrame.getContentPane().add(BorderLayout.CENTER, jPanel);
         jFrame.getContentPane().add(BorderLayout.SOUTH, jPanelForButton);
@@ -235,19 +181,20 @@ public class Main {
         return jButton;
     }
 
-    public static void addLabelToFrame(JPanel jPanel) {
+    public static void addLabelToFrame(int numberMachine, JPanel jPanel) {
         Font font = new Font("Impact", Font.PLAIN, 20);
 
-        numberMachine++;
-        JLabel label = new JLabel("Банкомат1: ");
-        labelAmountATMAction = new JLabel("Кол-во операций ");
-        labelAmountATMAction.setFont(font);
-        label.setFont(font);
-        labelAmountATMMoney = new JLabel("Прибыль банкомата ");
-        labelAmountATMMoney.setFont(font);
-        jTextArea = new JTextArea(2, 3);
-        jTextArea.setName(String.valueOf(numberMachine));
+        JLabel label = new JLabel("Банкомат" + numberMachine + ": ");
 
+        JLabel labelAmountATMAction = new JLabel("Кол-во операций ");
+        JLabel labelAmountATMMoney = new JLabel("Прибыль банкомата ");
+        JTextArea jTextArea = new JTextArea(2, 3);
+
+        label.setFont(font);
+        labelAmountATMAction.setFont(font);
+        labelAmountATMMoney.setFont(font);
+
+        jTextArea.setName(String.valueOf(numberMachine));
 
         jTextArea.setEditable(false);
         jPanel.add(label);
@@ -261,66 +208,12 @@ public class Main {
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jTextArea.setEditable(false);
+
+        jLabelMapAction.put(numberMachine, labelAmountATMAction);
+        jLabelMapMoney.put(numberMachine, labelAmountATMMoney);
+        jTextAreaMap.put(numberMachine, jTextArea);
         jPanel.add(scrollPane);
-
-        //
-
-        numberMachine++;
-        JLabel label1 = new JLabel("Банкомат2: ");
-        label1.setFont(font);
-        labelAmountATMAction1 = new JLabel("Кол-во операций ");
-        labelAmountATMAction1.setFont(font);
-        labelAmountATMMoney1 = new JLabel("Прибыль банкомата ");
-        labelAmountATMMoney1.setFont(font);
-        label1.setFont(font);
-        jTextArea1 = new JTextArea(2, 3);
-        jTextArea1.setName(String.valueOf(numberMachine));
-
-
-        jTextArea1.setEditable(false);
-        jPanel.add(label1);
-        jPanel.add(labelAmountATMAction1);
-        jPanel.add(labelAmountATMMoney1);
-        jPanel.add(jTextArea1);
-
-
-        JScrollPane scrollPane1 = new JScrollPane(jTextArea1);
-        jTextArea1.setLineWrap(true);
-        scrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jTextArea1.setEditable(false);
-        jPanel.add(scrollPane1);
-
-        //
-        numberMachine++;
-        JLabel label2 = new JLabel("Банкомат3: ");
-        label2.setFont(font);
-        labelAmountATMAction2 = new JLabel("Кол-во операций ");
-        labelAmountATMAction2.setFont(font);
-        labelAmountATMMoney2 = new JLabel("Прибыль банкомата ");
-        labelAmountATMMoney2.setFont(font);
-        label2.setFont(font);
-        jTextArea2 = new JTextArea(2, 3);
-        jTextArea2.setName(String.valueOf(numberMachine));
-
-
-        jTextArea2.setEditable(false);
-        jPanel.add(label2);
-        jPanel.add(labelAmountATMAction2);
-        jPanel.add(labelAmountATMMoney2);
-        jPanel.add(jTextArea2);
-
-
-        JScrollPane scrollPane2 = new JScrollPane(jTextArea2);
-        jTextArea2.setLineWrap(true);
-        scrollPane2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jTextArea2.setEditable(false);
-        jPanel.add(scrollPane2);
-
-
     }
-
 
 }
 
@@ -330,15 +223,15 @@ class MachineButtonActionListener implements ActionListener {
         switch (e.getActionCommand()) {
             case "Починить 1 банкомат":
                 Main.machineMap.get(1).setMachineWork(true);
-                Main.components.get(OperatorComponents.REPAIR_FIRST_MACHINE.toString()).setEnabled(false);
+                Main.components.get(1).setEnabled(false);
                 break;
             case "Починить 2 банкомат":
                 Main.machineMap.get(2).setMachineWork(true);
-                Main.components.get(OperatorComponents.REPAIR_SECOND_MACHINE.toString()).setEnabled(false);
+                Main.components.get(2).setEnabled(false);
                 break;
             case "Починить 3 банкомат":
                 Main.machineMap.get(3).setMachineWork(true);
-                Main.components.get(OperatorComponents.REPAIR_THIRD_MACHINE.toString()).setEnabled(false);
+                Main.components.get(3).setEnabled(false);
                 break;
         }
     }
