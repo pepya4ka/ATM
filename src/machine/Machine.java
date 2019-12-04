@@ -7,11 +7,13 @@ public class Machine implements MachineActions {
     private boolean machineWork;
     private boolean occupation;
     private int actionsAmountByMachine;
+    private int machineCost;
 
     public Machine() {
         this.machineWork = true;
         this.occupation = false;
         this.machineCashAmount = 0;
+        this.machineCost = 0;
     }
 
     public int getActionsAmountByMachine() {
@@ -52,5 +54,13 @@ public class Machine implements MachineActions {
 
     public void setMachineNumber(int machineNumber) {
         this.machineNumber = machineNumber;
+    }
+
+    public int getMachineCost() {
+        return machineCost;
+    }
+
+    public void setMachineCost(int machineCost) {
+        this.machineCost = machineCost;
     }
 }

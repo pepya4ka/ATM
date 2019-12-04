@@ -2,177 +2,120 @@
 package frame;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
-import static javax.swing.GroupLayout.Alignment.*;
+public class FrameManager {
 
-public class FrameManager extends JFrame {
+    protected static Map<Integer, JButton> components = new HashMap<>();
+    private Map<Integer, JTextArea> jTextAreaMap = new HashMap<>();
+    private Map<Integer, JLabel> jLabelMapMoney = new HashMap<>();
+    private Map<Integer, JLabel> jLabelMapAction = new HashMap<>();
 
-    public FrameManager() {
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        ////
-        JLabel label = new JLabel("Банкомат1: ");
-        JLabel labelAmountATMAction = new JLabel("Кол-во операций ");
-        JTextArea jTextArea = new JTextArea(2, 3);
-        JScrollPane scrollPane = new JScrollPane(jTextArea);
-        settingsJScrollPane(jTextArea, scrollPane);
-        ////
-        JLabel label1 = new JLabel("Банкомат1: ");
-        JLabel labelAmountATMAction1 = new JLabel("Кол-во операций ");
-        JTextArea jTextArea1 = new JTextArea(2, 3);
-        JScrollPane scrollPane1 = new JScrollPane(jTextArea);
-        settingsJScrollPane(jTextArea1, scrollPane1);
-        ////
-        JLabel label2 = new JLabel("Банкомат1: ");
-        JLabel labelAmountATMAction2 = new JLabel("Кол-во операций ");
-        JTextArea jTextArea2 = new JTextArea(2, 3);
-        JScrollPane scrollPane2 = new JScrollPane(jTextArea);
-        settingsJScrollPane(jTextArea2, scrollPane2);
-
-
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
-
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addComponent(label)
-                .addComponent(labelAmountATMAction)
-                .addComponent(scrollPane)
-                .addGroup(layout.createParallelGroup(LEADING))
-                    .addComponent(label1)
-                    .addComponent(labelAmountATMAction1)
-                    .addComponent(scrollPane1)
-                .addGroup(layout.createParallelGroup(LEADING))
-                    .addComponent(label2)
-                    .addComponent(labelAmountATMAction2)
-                    .addComponent(scrollPane2)
-        );
-
-        //pack();
+    public Map<Integer, JButton> getComponents() {
+        return components;
     }
 
-    private void settingsJScrollPane(JTextArea jTextArea, JScrollPane jScrollPane) {
+    public Map<Integer, JTextArea> getJTextAreaMap() {
+        return jTextAreaMap;
+    }
+
+    public Map<Integer, JLabel> getJLabelMapMoney() {
+        return jLabelMapMoney;
+    }
+
+    public Map<Integer, JLabel> getJLabelMapAction() {
+        return jLabelMapAction;
+    }
+
+    public FrameManager(String nameFrame) {
+        JFrame jFrame = new JFrame(nameFrame);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel jPanel = new JPanel();
+        jPanel.setLayout(new GridLayout(3, 4));
+        addLabelToFrame(1, jPanel);
+        addLabelToFrame(2, jPanel);
+        addLabelToFrame(3, jPanel);
+
+        JPanel jPanelForButton = new JPanel();
+        components.put(1, setupRepairButton(1, jPanelForButton));
+        components.put(2, setupRepairButton(2, jPanelForButton));
+        components.put(3, setupRepairButton(3, jPanelForButton));
+
+        jFrame.getContentPane().add(BorderLayout.SOUTH, jPanelForButton);
+
+        jFrame.setSize(1500, 600);
+        jFrame.setResizable(false);
+        jFrame.setVisible(true);
+        jFrame.setLocation(0, 300);
+    }
+
+    private JButton setupRepairButton(int numberMachine, JPanel jPanel) {
+        JButton jButton = new JButton("Починить " + numberMachine + " банкомат");
+        jButton.setEnabled(false);
+        jButton.setPreferredSize(new Dimension(489, 50));
+        jButton.addActionListener(new MachineButtonActionListener());
+        jPanel.add(jButton, BorderLayout.PAGE_END);
+
+        return jButton;
+    }
+
+    public void addLabelToFrame(int numberMachine, JPanel jPanel) {
+        Font font = new Font("Impact", Font.PLAIN, 20);
+
+        JLabel label = new JLabel("Банкомат" + numberMachine + ": ");
+
+        JLabel labelAmountATMAction = new JLabel("Кол-во операций ");
+        JLabel labelAmountATMMoney = new JLabel("Прибыль банкомата ");
+        JTextArea jTextArea = new JTextArea(2, 3);
+
+        label.setFont(font);
+        labelAmountATMAction.setFont(font);
+        labelAmountATMMoney.setFont(font);
+
+        jTextArea.setName(String.valueOf(numberMachine));
+
+        jTextArea.setEditable(false);
+        jPanel.add(label);
+        jPanel.add(labelAmountATMAction);
+        jPanel.add(labelAmountATMMoney);
+        jPanel.add(jTextArea);
+
+
         JScrollPane scrollPane = new JScrollPane(jTextArea);
         jTextArea.setLineWrap(true);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jTextArea.setEditable(false);
-    }
 
-    public static void main(String args[])
-    {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                JFrame.setDefaultLookAndFeelDecorated(true);
-                new FrameManager().setVisible(true);
-            }
-        });
+        jLabelMapAction.put(numberMachine, labelAmountATMAction);
+        jLabelMapMoney.put(numberMachine, labelAmountATMMoney);
+        jTextAreaMap.put(numberMachine, jTextArea);
+        jPanel.add(scrollPane);
     }
 
 }
-*/
 
-/*package frame;
-// Пример использования менеджера расположения GroupLayout
-
-import javax.swing.*;
-
-import static javax.swing.GroupLayout.Alignment.*;
-
-public class FrameManager extends JFrame
-{
-    public FrameManager()
-    {
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        // Список компонентов формы
-        JLabel label = new JLabel("Банкомат1: ");
-        JLabel labelAmountATMAction = new JLabel("Кол-во операций ");
-        JTextArea jTextArea = new JTextArea(2, 3);
-        JScrollPane scrollPane = new JScrollPane(jTextArea);
-        settingsJScrollPane(jTextArea, scrollPane);
-        ////
-        JLabel label1 = new JLabel("Банкомат1: ");
-        JLabel labelAmountATMAction1 = new JLabel("Кол-во операций ");
-        JTextArea jTextArea1 = new JTextArea(2, 3);
-        JScrollPane scrollPane1 = new JScrollPane(jTextArea);
-        settingsJScrollPane(jTextArea1, scrollPane1);
-        ////
-        JLabel label2 = new JLabel("Банкомат1: ");
-        JLabel labelAmountATMAction2 = new JLabel("Кол-во операций ");
-        JTextArea jTextArea2 = new JTextArea(2, 3);
-        JScrollPane scrollPane2 = new JScrollPane(jTextArea);
-        settingsJScrollPane(jTextArea2, scrollPane2);
-        //
-
-        JTextField  textField       = new JTextField();
-        JCheckBox   cbCaseSensitive = new JCheckBox("Учет регистра");
-        JCheckBox   cbWholeWords    = new JCheckBox("Целое слово"  );
-        JCheckBox   cbBackward      = new JCheckBox("Поиск назад"  );
-        JButton     btnFind         = new JButton("Найти"   );
-        JButton     btnCancel       = new JButton("Отменить");
-
-        //cbCaseSensitive.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        //cbWholeWords   .setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        //cbBackward     .setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
-        // Определение менеджера расположения
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
-        // Создание горизонтальной группы
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addComponent(label)
-                .addGroup(layout.createParallelGroup(LEADING)
-                        .addComponent(textField)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(LEADING)
-                                        .addComponent(cbCaseSensitive)
-                                        .addComponent(cbBackward))
-                                .addGroup(layout.createParallelGroup(LEADING)
-                                        .addComponent(cbWholeWords))))
-                .addGroup(layout.createParallelGroup(LEADING)
-                        .addComponent(btnFind)
-                        .addComponent(btnCancel))
-        );
-
-        layout.linkSize(SwingConstants.HORIZONTAL, btnFind, btnCancel);
-
-        // Создание вертикальной группы
-        layout.setVerticalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(BASELINE)
-                        .addComponent(label)
-                        .addComponent(textField)
-                        .addComponent(btnFind))
-                .addGroup(layout.createParallelGroup(LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(BASELINE)
-                                        .addComponent(cbCaseSensitive)
-                                        .addComponent(cbWholeWords))
-                                .addGroup(layout.createParallelGroup(BASELINE)
-                                        .addComponent(cbBackward)))
-                        .addComponent(btnCancel))
-        );
-
-        setTitle("Поиск");
-        pack();
-    }
-    public static void main(String args[])
-    {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                JFrame.setDefaultLookAndFeelDecorated(true);
-                new FrameManager().setVisible(true);
-            }
-        });
-    }
-
-    private void settingsJScrollPane(JTextArea jTextArea, JScrollPane jScrollPane) {
-        JScrollPane scrollPane = new JScrollPane(jTextArea);
-        jTextArea.setLineWrap(true);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jTextArea.setEditable(false);
+class MachineButtonActionListener implements ActionListener {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case "Починить 1 банкомат":
+                Main.machineMap.get(1).setMachineWork(true);
+                FrameManager.components.get(1).setEnabled(false);
+                break;
+            case "Починить 2 банкомат":
+                Main.machineMap.get(2).setMachineWork(true);
+                FrameManager.components.get(2).setEnabled(false);
+                break;
+            case "Починить 3 банкомат":
+                Main.machineMap.get(3).setMachineWork(true);
+                FrameManager.components.get(3).setEnabled(false);
+                break;
+        }
     }
 }*/

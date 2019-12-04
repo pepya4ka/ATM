@@ -61,4 +61,8 @@ public class Account implements AccountActions, Runnable {
     public void run() {
 
     }
+
+    public static int ran(int amountMoney) {
+        return new Random().nextInt(amountMoney);
+    }
 }

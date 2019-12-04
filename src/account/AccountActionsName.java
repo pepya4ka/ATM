@@ -4,6 +4,7 @@ public enum AccountActionsName {
     STARTED_SERVICE ("Начал обслуживание"), //Начал обслуживание
     ADDED_BALANCE ("Пополнил баланс"), //Пополнил баланс
     PULL_OFF ("Снял со счета"), //Снял со счета
+    TRANSFERRED("Перевел на другой счет"),//Перевел на другой счет
     END_OF_SERVICE ("Закончил обслуживание"); //Закончил обслуживание
 
     private String title;
