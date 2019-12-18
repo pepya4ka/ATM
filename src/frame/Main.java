@@ -195,8 +195,8 @@ public class Main {
 
         JLabel label = new JLabel("Такси" + numberMachine + ": ");
 
-        JLabel labelAmountATMAction = new JLabel("Кол-во поездок ");
         JLabel labelAmountATMMoney = new JLabel("Доходы ");
+        JLabel labelAmountATMAction = new JLabel("Кол-во поездок ");
         JLabel labelAmountATMCosts = new JLabel("Расходы ");
         JLabel labelAmountATMGains = new JLabel("Прибыль ");
         JTextArea jTextArea = new JTextArea(2, 3);
