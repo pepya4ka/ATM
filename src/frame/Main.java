@@ -1,6 +1,7 @@
 package frame;
 
 import account.Account;
+import account.AccountActions;
 import account.AccountActionsName;
 import account.Actions;
 import machine.Machine;
@@ -25,16 +26,12 @@ class ThreadForMachine implements Runnable {
 
     public String replenishAndWithdraw(Account account, String s, Machine machine) {
         if (!s.equals(AccountActionsName.END_OF_SERVICE.getTitle())) {
-            if (s.equals(AccountActionsName.ADDED_BALANCE.getTitle())) {
+            if (s.equals(AccountActionsName.ON_MY_WAY.getTitle())) {
                 int temp = account.randomAmount(account.getAmountMoney());
                 account.setAmountMoney(account.getAmountMoney() - temp);
-                return "(" + temp + ") ";
-            }
-            if (s.equals(AccountActionsName.PULL_OFF.getTitle()) || s.equals(AccountActionsName.TRANSFERRED.getTitle())) {
-                int temp = account.randomAmount(account.getAmountMoney());
-                account.setAmountMoney(account.getAmountMoney() - temp);
-                machine.setMachineCashAmount(machine.getMachineCashAmount() + temp * 0.03);
-                return "(" + temp + ") ";
+                machine.setMachineCashAmount(machine.getMachineCashAmount() + temp * 0.5);
+                machine.setMachineCost(machine.getMachineCost() + (int) (temp * 0.5 * 0.25));
+                return "";
             }
         } else {
             return "";
@@ -53,11 +50,7 @@ class ThreadForMachine implements Runnable {
         while (machine.isMachineWork()) {
             try {
                 tempAccount = Main.accountArrayDeque.take();
-                Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + machine.getMachineNumber() + "\n");
-//                Main.frameManager.getJTextAreaMap().get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в банкомате " + machine.getMachineNumber() + "\n");
-                machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
-                Main.jLabelMapAction.get(machine.getMachineNumber()).setText("Кол-во операций " + machine.getActionsAmountByMachine());
-//                Main.frameManager.getJLabelMapAction().get(machine.getMachineNumber()).setText("Кол-во операций " + machine.getActionsAmountByMachine());
+                Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в такси " + machine.getMachineNumber() + "\n");
                 machine.setOccupation(true);
                 try {
                     Thread.sleep(1500);
@@ -67,46 +60,40 @@ class ThreadForMachine implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            while (machine.isOccupation()) {
-                AccountActionsName accountActionsName = new Actions().accountActionsName();
-                String money = replenishAndWithdraw(tempAccount, accountActionsName.getTitle(), machine);
-                Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + money + " в банкомате " + machine.getMachineNumber() + "\n");
-//                Main.frameManager.getJTextAreaMap().get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + accountActionsName.getTitle() + money + " в банкомате " + machine.getMachineNumber() + "\n");
-                machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
-                Main.jLabelMapAction.get(machine.getMachineNumber()).setText("Кол-во операций " + machine.getActionsAmountByMachine());
-//                Main.frameManager.getJLabelMapAction().get(machine.getMachineNumber()).setText("Кол-во операций " + machine.getActionsAmountByMachine());
-                Main.jLabelMapMoney.get(machine.getMachineNumber()).setText("Прибыль " + (int) machine.getMachineCashAmount() + " р");
-//                Main.frameManager.getJLabelMapMoney().get(machine.getMachineNumber()).setText("Прибыль банкомата " + (int) machine.getMachineCashAmount() + " р");
-                Main.jLabelMapGains.get(machine.getMachineNumber()).setText("Доходы " + (int) (machine.getMachineCashAmount() - machine.getMachineCost()) + " р");
-                if (Account.ran(100) > 94) {
-                    Main.components.get(machine.getMachineNumber()).setEnabled(true);
-//                    Main.frameManager.getComponents().get(machine.getMachineNumber()).setEnabled(true);
-                    if (Account.ran(10) > 5)
-                        JOptionPane.showMessageDialog(null, "Банкомат " + machine.getMachineNumber() + " не может подключиться к серверу!", "Ошибка", JOptionPane.ERROR_MESSAGE);
-                    else
-                        JOptionPane.showMessageDialog(null, "Банкомат " + machine.getMachineNumber() + " съел карту", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.ON_MY_WAY.getTitle() + " в такси " + machine.getMachineNumber() + "\n");
+            try {
+                Thread.sleep(Account.ran(25000));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (Account.ran(100) > 94) {
+                Main.components.get(machine.getMachineNumber()).setEnabled(true);
+                if (Account.ran(10) > 5)
+                    JOptionPane.showMessageDialog(null, "У такси " + machine.getMachineNumber() + " лопнуло колесо!", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                else
+                    JOptionPane.showMessageDialog(null, "Такси " + machine.getMachineNumber() + " вылетел в кювет", "Ошибка", JOptionPane.ERROR_MESSAGE);
 
-                    machine.setMachineWork(false);
-                    do {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                machine.setMachineWork(false);
+                do {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    while (!machine.isMachineWork());
                 }
-                if (accountActionsName == AccountActionsName.END_OF_SERVICE) {
-                    machine.setMachineCost(machine.getMachineCost() + 100);
-                    machine.setOccupation(false);
-                    Main.jLabelMapCosts.get(machine.getMachineNumber()).setText("Расходы " + machine.getMachineCost() + " р");
-                    Main.jLabelMapGains.get(machine.getMachineNumber()).setText("Доходы " + (int) (machine.getMachineCashAmount() - machine.getMachineCost()) + " р");
-                }
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                while (!machine.isMachineWork());
+            }
+            replenishAndWithdraw(tempAccount, AccountActionsName.ON_MY_WAY.getTitle(), machine);
+            Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.END_OF_SERVICE.getTitle() + " в такси " + machine.getMachineNumber() + "\n");
+            Main.jLabelMapMoney.get(machine.getMachineNumber()).setText("Доходы " + (int) machine.getMachineCashAmount() + " р");
+            Main.jLabelMapCosts.get(machine.getMachineNumber()).setText("Расходы " + machine.getMachineCost() + " р");
+            Main.jLabelMapGains.get(machine.getMachineNumber()).setText("Прибыль " + (int) (machine.getMachineCashAmount() - machine.getMachineCost()) + " р");
+            machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
+            Main.jLabelMapAction.get(machine.getMachineNumber()).setText("Кол-во поездок " + machine.getActionsAmountByMachine());
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
@@ -116,10 +103,9 @@ class ThreadForMachine implements Runnable {
 public class Main {
 
     public static LinkedBlockingQueue<Account> accountArrayDeque;
-    public static JFrame jFrame = new JFrame("Сеть банкоматов");
+    public static JFrame jFrame = new JFrame("Диспетчерская такси");
     public static Map<Integer, JButton> components = new HashMap<>();
     public static Map<Integer, Machine> machineMap = new HashMap<>();
-    //    public static FrameManager frameManager;
     public static Map<Integer, JTextArea> jTextAreaMap = new HashMap<>();
     public static Map<Integer, JLabel> jLabelMapMoney = new HashMap<>();
     public static Map<Integer, JLabel> jLabelMapAction = new HashMap<>();
@@ -173,11 +159,13 @@ public class Main {
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new GridLayout(3, 4));
+        jPanel.setBackground(Color.GRAY);
         addLabelToFrame(1, jPanel);
         addLabelToFrame(2, jPanel);
         addLabelToFrame(3, jPanel);
 
         JPanel jPanelForButton = new JPanel();
+        jPanelForButton.setBackground(Color.GRAY);
         components.put(1, setupRepairButton(1, jPanelForButton));
         components.put(2, setupRepairButton(2, jPanelForButton));
         components.put(3, setupRepairButton(3, jPanelForButton));
@@ -192,7 +180,8 @@ public class Main {
     }
 
     private static JButton setupRepairButton(int numberMachine, JPanel jPanel) {
-        JButton jButton = new JButton("Починить " + numberMachine + " банкомат");
+        JButton jButton = new JButton("Починить " + numberMachine);
+        jButton.setBackground(Color.PINK);
         jButton.setEnabled(false);
         jButton.setPreferredSize(new Dimension(589, 50));
         jButton.addActionListener(new MachineButtonActionListener());
@@ -202,14 +191,14 @@ public class Main {
     }
 
     public static void addLabelToFrame(int numberMachine, JPanel jPanel) {
-        Font font = new Font("Impact", Font.PLAIN, 20);
+        Font font = new Font("Impact", Font.ITALIC, 20);
 
-        JLabel label = new JLabel("Банкомат" + numberMachine + ": ");
+        JLabel label = new JLabel("Такси" + numberMachine + ": ");
 
-        JLabel labelAmountATMAction = new JLabel("Кол-во операций ");
-        JLabel labelAmountATMMoney = new JLabel("Прибыль ");
+        JLabel labelAmountATMAction = new JLabel("Кол-во поездок ");
+        JLabel labelAmountATMMoney = new JLabel("Доходы ");
         JLabel labelAmountATMCosts = new JLabel("Расходы ");
-        JLabel labelAmountATMGains = new JLabel("Доходы ");
+        JLabel labelAmountATMGains = new JLabel("Прибыль ");
         JTextArea jTextArea = new JTextArea(2, 3);
 
         label.setFont(font);
@@ -218,6 +207,7 @@ public class Main {
         labelAmountATMCosts.setFont(font);
         labelAmountATMGains.setFont(font);
 
+        jTextArea.setBackground(Color.LIGHT_GRAY);
         jTextArea.setName(String.valueOf(numberMachine));
 
         jTextArea.setEditable(false);
@@ -251,28 +241,28 @@ class MachineButtonActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Machine tempMachine;
         switch (e.getActionCommand()) {
-            case "Починить 1 банкомат":
+            case "Починить 1":
                 tempMachine = Main.machineMap.get(1);
                 tempMachine.setMachineWork(true);
                 tempMachine.setMachineCost(tempMachine.getMachineCost() + 25);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
-                Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Доходы " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
+                Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Прибыль " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
                 Main.components.get(1).setEnabled(false);
                 break;
-            case "Починить 2 банкомат":
+            case "Починить 2":
                 tempMachine = Main.machineMap.get(2);
                 tempMachine.setMachineWork(true);
                 tempMachine.setMachineCost(tempMachine.getMachineCost() + 25);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
-                Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Доходы " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
+                Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Прибыль " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
                 Main.components.get(2).setEnabled(false);
                 break;
-            case "Починить 3 банкомат":
+            case "Починить 3":
                 tempMachine = Main.machineMap.get(3);
                 tempMachine.setMachineWork(true);
                 tempMachine.setMachineCost(tempMachine.getMachineCost() + 25);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
-                Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Доходы " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
+                Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Прибыль " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
                 Main.components.get(3).setEnabled(false);
                 break;
         }

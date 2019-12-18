@@ -19,7 +19,7 @@ public class Account implements AccountActions, Runnable {
     public Account() {
         numberOfAccounts++;
         accountNumber = numberOfAccounts;
-        this.amountMoney = 15000;
+        this.amountMoney = 1000;
     }
 
     public int getAmountMoney() {
