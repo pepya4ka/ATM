@@ -61,12 +61,8 @@ class ThreadForMachine implements Runnable {
                 e.printStackTrace();
             }
             Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.ON_MY_WAY.getTitle() + " в такси " + machine.getMachineNumber() + "\n");
-            try {
-                Thread.sleep(Account.ran(25000));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (Account.ran(100) > 94) {
+
+            if (Account.ran(100) > 61) {
                 Main.components.get(machine.getMachineNumber()).setEnabled(true);
                 if (Account.ran(10) > 5)
                     JOptionPane.showMessageDialog(null, "У такси " + machine.getMachineNumber() + " лопнуло колесо!", "Ошибка", JOptionPane.ERROR_MESSAGE);
@@ -82,6 +78,11 @@ class ThreadForMachine implements Runnable {
                     }
                 }
                 while (!machine.isMachineWork());
+            }
+            try {
+                Thread.sleep(Account.ran(25000));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
             replenishAndWithdraw(tempAccount, AccountActionsName.ON_MY_WAY.getTitle(), machine);
             Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.END_OF_SERVICE.getTitle() + " в такси " + machine.getMachineNumber() + "\n");
@@ -244,7 +245,7 @@ class MachineButtonActionListener implements ActionListener {
             case "Починить 1":
                 tempMachine = Main.machineMap.get(1);
                 tempMachine.setMachineWork(true);
-                tempMachine.setMachineCost(tempMachine.getMachineCost() + 25);
+                tempMachine.setMachineCost(tempMachine.getMachineCost() + 550);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
                 Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Прибыль " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
                 Main.components.get(1).setEnabled(false);
@@ -252,7 +253,7 @@ class MachineButtonActionListener implements ActionListener {
             case "Починить 2":
                 tempMachine = Main.machineMap.get(2);
                 tempMachine.setMachineWork(true);
-                tempMachine.setMachineCost(tempMachine.getMachineCost() + 25);
+                tempMachine.setMachineCost(tempMachine.getMachineCost() + 550);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
                 Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Прибыль " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
                 Main.components.get(2).setEnabled(false);
@@ -260,7 +261,7 @@ class MachineButtonActionListener implements ActionListener {
             case "Починить 3":
                 tempMachine = Main.machineMap.get(3);
                 tempMachine.setMachineWork(true);
-                tempMachine.setMachineCost(tempMachine.getMachineCost() + 25);
+                tempMachine.setMachineCost(tempMachine.getMachineCost() + 550);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
                 Main.jLabelMapGains.get(tempMachine.getMachineNumber()).setText("Прибыль " + (int) (tempMachine.getMachineCashAmount() - tempMachine.getMachineCost()) + " р");
                 Main.components.get(3).setEnabled(false);
