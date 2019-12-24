@@ -5,15 +5,45 @@ public class Machine implements MachineActions {
     private int machineNumber;
     private double machineCashAmount;
     private boolean machineWork;
+    private boolean machineBroken;
+    private boolean machineFree;
     private boolean occupation;
     private int actionsAmountByMachine;
     private int machineCost;
 
     public Machine() {
         this.machineWork = true;
+        this.machineFree = true;
+        this.machineBroken = false;
         this.occupation = false;
         this.machineCashAmount = 0;
         this.machineCost = 0;
+    }
+
+    public String getWorkFreeBroken() {
+        if (machineFree)
+            return "Такси" + machineNumber + " - свободно";
+        if (machineBroken)
+            return "Такси" + machineNumber + " - сломано";
+        if (occupation)
+            return "Такси" + machineNumber + " - на заказе";
+        return "";
+    }
+
+    public boolean isMachineFree() {
+        return machineFree;
+    }
+
+    public void setMachineFree(boolean machineFree) {
+        this.machineFree = machineFree;
+    }
+
+    public boolean isMachineBroken() {
+        return machineBroken;
+    }
+
+    public void setMachineBroken(boolean machineBroken) {
+        this.machineBroken = machineBroken;
     }
 
     public int getActionsAmountByMachine() {

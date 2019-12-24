@@ -1,9 +1,7 @@
 package frame;
 
 import account.Account;
-import account.AccountActions;
 import account.AccountActionsName;
-import account.Actions;
 import machine.Machine;
 
 import javax.swing.*;
@@ -13,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.zip.InflaterInputStream;
 
 class ThreadForMachine implements Runnable {
 
@@ -52,6 +51,9 @@ class ThreadForMachine implements Runnable {
                 tempAccount = Main.accountArrayDeque.take();
                 Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.STARTED_SERVICE.getTitle() + " в такси " + machine.getMachineNumber() + "\n");
                 machine.setOccupation(true);
+                machine.setMachineFree(false);
+                machine.setMachineBroken(false);
+                Main.jLabelMap.get(machine.getMachineNumber()).setText(machine.getWorkFreeBroken());
                 try {
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
@@ -68,7 +70,10 @@ class ThreadForMachine implements Runnable {
                     JOptionPane.showMessageDialog(null, "У такси " + machine.getMachineNumber() + " лопнуло колесо!", "Ошибка", JOptionPane.ERROR_MESSAGE);
                 else
                     JOptionPane.showMessageDialog(null, "Такси " + machine.getMachineNumber() + " вылетел в кювет", "Ошибка", JOptionPane.ERROR_MESSAGE);
-
+                machine.setOccupation(true);
+                machine.setMachineFree(false);
+                machine.setMachineBroken(true);
+                Main.jLabelMap.get(machine.getMachineNumber()).setText(machine.getWorkFreeBroken());
                 machine.setMachineWork(false);
                 do {
                     try {
@@ -86,13 +91,17 @@ class ThreadForMachine implements Runnable {
             }
             replenishAndWithdraw(tempAccount, AccountActionsName.ON_MY_WAY.getTitle(), machine);
             Main.jTextAreaMap.get(machine.getMachineNumber()).append(tempAccount.getAccountNumber() + " " + AccountActionsName.END_OF_SERVICE.getTitle() + " в такси " + machine.getMachineNumber() + "\n");
+            machine.setOccupation(false);
+            machine.setMachineFree(true);
+            machine.setMachineBroken(false);
+            Main.jLabelMap.get(machine.getMachineNumber()).setText(machine.getWorkFreeBroken());
             Main.jLabelMapMoney.get(machine.getMachineNumber()).setText("Доходы " + (int) machine.getMachineCashAmount() + " р");
             Main.jLabelMapCosts.get(machine.getMachineNumber()).setText("Расходы " + machine.getMachineCost() + " р");
             Main.jLabelMapGains.get(machine.getMachineNumber()).setText("Прибыль " + (int) (machine.getMachineCashAmount() - machine.getMachineCost()) + " р");
             machine.setActionsAmountByMachine(machine.getActionsAmountByMachine() + 1);
             Main.jLabelMapAction.get(machine.getMachineNumber()).setText("Кол-во поездок " + machine.getActionsAmountByMachine());
             try {
-                Thread.sleep(1500);
+                Thread.sleep(9000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -112,6 +121,7 @@ public class Main {
     public static Map<Integer, JLabel> jLabelMapAction = new HashMap<>();
     public static Map<Integer, JLabel> jLabelMapCosts = new HashMap<>();
     public static Map<Integer, JLabel> jLabelMapGains = new HashMap<>();
+    public static Map<Integer, JLabel> jLabelMap = new HashMap<>();
 
     public static void main(String[] args) {
 
@@ -194,7 +204,7 @@ public class Main {
     public static void addLabelToFrame(int numberMachine, JPanel jPanel) {
         Font font = new Font("Impact", Font.ITALIC, 20);
 
-        JLabel label = new JLabel("Такси" + numberMachine + ": ");
+        JLabel label = new JLabel("Такси" + numberMachine + " - свободно");
 
         JLabel labelAmountATMMoney = new JLabel("Доходы ");
         JLabel labelAmountATMAction = new JLabel("Кол-во поездок ");
@@ -226,6 +236,7 @@ public class Main {
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jTextArea.setEditable(false);
 
+        jLabelMap.put(numberMachine, label);
         jLabelMapAction.put(numberMachine, labelAmountATMAction);
         jLabelMapCosts.put(numberMachine, labelAmountATMCosts);
         jLabelMapGains.put(numberMachine, labelAmountATMGains);
@@ -244,6 +255,12 @@ class MachineButtonActionListener implements ActionListener {
         switch (e.getActionCommand()) {
             case "Починить 1":
                 tempMachine = Main.machineMap.get(1);
+
+                tempMachine.setOccupation(true);
+                tempMachine.setMachineFree(false);
+                tempMachine.setMachineBroken(false);
+                Main.jLabelMap.get(tempMachine.getMachineNumber()).setText(tempMachine.getWorkFreeBroken());
+
                 tempMachine.setMachineWork(true);
                 tempMachine.setMachineCost(tempMachine.getMachineCost() + 550);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
@@ -252,6 +269,12 @@ class MachineButtonActionListener implements ActionListener {
                 break;
             case "Починить 2":
                 tempMachine = Main.machineMap.get(2);
+
+                tempMachine.setOccupation(true);
+                tempMachine.setMachineFree(false);
+                tempMachine.setMachineBroken(false);
+                Main.jLabelMap.get(tempMachine.getMachineNumber()).setText(tempMachine.getWorkFreeBroken());
+
                 tempMachine.setMachineWork(true);
                 tempMachine.setMachineCost(tempMachine.getMachineCost() + 550);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
@@ -260,6 +283,12 @@ class MachineButtonActionListener implements ActionListener {
                 break;
             case "Починить 3":
                 tempMachine = Main.machineMap.get(3);
+
+                tempMachine.setOccupation(true);
+                tempMachine.setMachineFree(false);
+                tempMachine.setMachineBroken(false);
+                Main.jLabelMap.get(tempMachine.getMachineNumber()).setText(tempMachine.getWorkFreeBroken());
+
                 tempMachine.setMachineWork(true);
                 tempMachine.setMachineCost(tempMachine.getMachineCost() + 550);
                 Main.jLabelMapCosts.get(tempMachine.getMachineNumber()).setText("Расходы " + tempMachine.getMachineCost() + " р");
